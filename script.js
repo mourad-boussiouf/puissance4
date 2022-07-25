@@ -12,10 +12,33 @@ const boardStyle = {
 
 }
 
-Object.keys(boardStyle).forEach(()=>{
+Object.keys(boardStyle).forEach((key)=>{
     board.style[key] = boardStyle[key];
 })
+
+
+
 document.body.appendChild(board);
+
+
+for(let i = 0; i < columns*rows; i++) {
+        const gridBox = document.createElement('div');
+        
+        const gridBoxStyle = {
+            backgroundColor :'white',
+            border:'solid',
+            height: `${gridBoxSize}px`,
+            width: `${gridBoxSize}px`
+        
+        }
+        
+        Object.keys(gridBoxStyle).forEach((key)=>{
+            gridBox.style[key] = gridBoxStyle[key];
+        })
+
+        board.appendChild(gridBox);
 }
 
-createGame(4,4,20)
+}
+
+createGame(7,3,20)
