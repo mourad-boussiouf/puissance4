@@ -1,4 +1,4 @@
-function createGame(columns, rows, gridBoxSize)
+function createGame(columns, rows, gridBoxSize) {
 
 const board = document.createElement('div');
 
@@ -16,3 +16,6 @@ Object.keys(boardStyle).forEach(()=>{
     board.style[key] = boardStyle[key];
 })
 document.body.appendChild(board);
+}
+
+createGame(4,4,20)
