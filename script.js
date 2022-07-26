@@ -8,7 +8,10 @@ const boardStyle = {
     display:'grid',
     gridTemplateColumns:`repeat(${columns}, ${gridBoxSize}px)`,
     gridTemplateRows:`repeat(${rows}, ${gridBoxSize}px)`,
-    gap: '2px'
+    gap: '2px',
+    height:'fit-content',
+    width: 'fit-content',
+    padding: '3px'
 
 }
 
@@ -37,6 +40,27 @@ for(let i = 0; i < columns*rows; i++) {
         })
 
         board.appendChild(gridBox);
+
+
+
+        const gridBoxHole = document.createElement('div');
+        
+        const gridBoxHoleStyle = {
+            backgroundColor :'white',
+            border:'solid',
+            height: `${gridBoxSize -10}px`,
+            width: `${gridBoxSize -10}px`,
+            borderRadius : '50%',
+            margin: `${gridBoxSize / 7}px`
+        
+        }
+        
+        Object.keys(gridBoxHoleStyle).forEach((key)=>{
+            gridBoxHole.style[key] = gridBoxHoleStyle[key];
+        })
+
+        gridBox.appendChild(gridBoxHole);
+
 }
 
 }
