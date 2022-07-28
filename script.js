@@ -28,7 +28,7 @@ for(let i = 0; i < columns*rows; i++) {
         const gridBox = document.createElement('div');
         
         const gridBoxStyle = {
-            backgroundColor :'white',
+            backgroundColor :'rgba (255,255,255,0)',
             border:'solid',
             height: `${gridBoxSize}px`,
             width: `${gridBoxSize}px`
@@ -46,10 +46,10 @@ for(let i = 0; i < columns*rows; i++) {
         const gridBoxHole = document.createElement('div');
         
         const gridBoxHoleStyle = {
-            backgroundColor :'white',
+            backgroundColor :'rgba (255,255,255,0)',
             border:'solid',
-            height: `${gridBoxSize -10}px`,
-            width: `${gridBoxSize -10}px`,
+            height: `${gridBoxSize - 10}px`,
+            width: `${gridBoxSize - 10}px`,
             borderRadius : '50%',
             margin: `${gridBoxSize / 7}px`
         
