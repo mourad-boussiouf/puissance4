@@ -1,5 +1,5 @@
 let GRID_SIZE = 30;
-let PIECE_COLOR = "red";
+let jeton_COLOR = "red";
 let GAME = [];
 let ANIMATING = false;
 let WINNING_ARRAYS = [];
@@ -8,6 +8,10 @@ let BOTTOM_EDGE = [35, 36, 37, 38, 39, 40, 41];
 
 const background = document.createElement("div");
 const board = document.createElement("div");
+
+background.style.backgroundColor = "rgba(255, 255, 255, 0)";
+document.body.appendChild(background);
+
 
 function findWinningArrays(gameSize) {
     for (let i = 0; i < gameSize; i++) {
@@ -86,7 +90,7 @@ function createGame(columns, rows) {
         backgroundColor: "rgba(255, 255, 255, 0)",
         transform: `translate(-${GRID_SIZE / 3}px,-${GRID_SIZE / 3}px)`,
         border: "solid",
-        color: "blue",
+        color: "DodgerBlue",
         borderWidth: `${GRID_SIZE / 2}px`,
         height: `${(GRID_SIZE * 2) / 3}px`,
         width: `${(GRID_SIZE * 2) / 3}px`,
@@ -130,17 +134,17 @@ function handleMouseover(gridBox) {
     if (!ANIMATING) {
       let currentColumn = Number(gridBox.getAttribute("id").substring(8)) + 1;
       if (currentColumn <= 7 && background.children.length === 1) {
-        let newPiece = createPiece(gridBox, PIECE_COLOR);
-        newPiece.style.zIndex = "-1";
+        let newjeton = createjeton(gridBox, jeton_COLOR);
+        newjeton.style.zIndex = "-1";
   
         const handleClick = () => {
           gridBox.removeEventListener("click", handleClick);
           ANIMATING = true;
-          let tempPieceColor = PIECE_COLOR;
-          if (PIECE_COLOR === "red") {
-            PIECE_COLOR = "yellow";
+          let tempjetonColor = jeton_COLOR;
+          if (jeton_COLOR === "red") {
+            jeton_COLOR = "yellow";
           } else {
-            PIECE_COLOR = "red";
+            jeton_COLOR = "red";
           }
   
           let keyframes = [{ transform: `translateY(${GRID_SIZE * 6}px)` }];
@@ -148,7 +152,7 @@ function handleMouseover(gridBox) {
           let options = {
             duration: 1000,
           };
-          newPiece.animate(keyframes, options);
+          newjeton.animate(keyframes, options);
   
           const columnArray = GAME.filter(
             (gridBox) => gridBox.column === currentColumn
@@ -156,14 +160,14 @@ function handleMouseover(gridBox) {
           for (let i = 5; i >= 0; i--) {
             if (columnArray[i].color === "blank") {
               const id = columnArray[i].id;
-              GAME[id].color = tempPieceColor;
-              checkForWin(tempPieceColor);
+              GAME[id].color = tempjetonColor;
+              checkForWin(tempjetonColor);
               setTimeout(() => {
                 const gridBoxHoleToUpdate = document.getElementById(
                   "gridBox-" + id
                 ).children[0];
-                gridBoxHoleToUpdate.style.backgroundColor = tempPieceColor;
-                background.removeChild(newPiece);
+                gridBoxHoleToUpdate.style.backgroundColor = tempjetonColor;
+                background.removeChild(newjeton);
                 ANIMATING = false;
               }, i * 170);
   
@@ -173,9 +177,9 @@ function handleMouseover(gridBox) {
         };
   
         gridBox.addEventListener("mouseout", () => {
-          if (background.children[1] === newPiece) {
+          if (background.children[1] === newjeton) {
             if (!ANIMATING) {
-              background.removeChild(newPiece);
+              background.removeChild(newjeton);
             }
           }
           gridBox.removeEventListener("click", handleClick);
@@ -186,7 +190,59 @@ function handleMouseover(gridBox) {
     }
 }
 
+function checkForWin(color) {
+    WINNING_ARRAYS.forEach((arr) => {
+      let win = 0;
+      arr.forEach((num) => {
+        if (GAME[num].color === color) {
+          win++;
+        }
+        if (win === 4) {
+            const gridBoxs = board.children
+            for(let i = 0; i < gridBoxs.length; i++){
+                gridBoxs[i].removeEventListener("mouseover", handleMouseover);
+            }
+          let winMessage = document.createElement('p');
+          if (color == 'yellow') {
+          winMessage.innerHTML = 
+            `Partie finie , le jaune remporte la vitoire !`;
+          }
+          else {winMessage.innerHTML = 
+            `Partie finie, le rouge remporte la victoire !`;}
+
+          document.body.append(winMessage) 
+        }
+      });
+    });
+}
   
 
+function createjeton(gridBox, color) {
+    let startX = gridBox.getBoundingClientRect().left;
+    let startY = gridBox.getBoundingClientRect().top;
+    const jeton = document.createElement("div");
+    const jetonStyles = {
+      position: "absolute",
+      top: startY - 20 + "px",
+      left: startX + GRID_SIZE / 6 + "px",
+      border: "solid",
+      height: `${(GRID_SIZE * 2) / 3}px`,
+      width: `${(GRID_SIZE * 2) / 3}px`,
+      textAlign: "center",
+      borderRadius: "50%",
+      backgroundColor: color,
+    };
+    
+    Object.keys(jetonStyles).forEach((key) => {
+      jeton.style[key] = jetonStyles[key];
+    });
+  
+    background.appendChild(jeton);
+  
+    return jeton;
+}
 
-createGame(7,3);
+board.style.cursor = `pointer`;
+
+
+createGame(7, 6);
