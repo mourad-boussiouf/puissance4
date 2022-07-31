@@ -6,6 +6,9 @@ let WINNING_ARRAYS = [];
 let RIGHT_EDGE = [6, 13, 20, 27, 34, 41];
 let BOTTOM_EDGE = [35, 36, 37, 38, 39, 40, 41];
 
+const background = document.createElement("div");
+const board = document.createElement("div");
+
 function findWinningArrays(gameSize) {
     for (let i = 0; i < gameSize; i++) {
       [1, 7, 8, 6].forEach((increment) => {
