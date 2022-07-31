@@ -1,7 +1,39 @@
 let GRID_SIZE = 30;
 let PIECE_COLOR = "red";
 let GAME = [];
+let ANIMATING = false;
+let WINNING_ARRAYS = [];
+let RIGHT_EDGE = [6, 13, 20, 27, 34, 41];
+let BOTTOM_EDGE = [35, 36, 37, 38, 39, 40, 41];
 
+function findWinningArrays(gameSize) {
+    for (let i = 0; i < gameSize; i++) {
+      [1, 7, 8, 6].forEach((increment) => {
+        buildWinningArray(i, increment);
+      });
+    }
+    console.log(WINNING_ARRAYS);
+}
+  
+
+function buildWinningArray(base, increment) {
+    let winningArray = [];
+    for (let j = 0; j < 4; j++) {
+      let toPush = base + j * increment;
+      toPush < 42 //exit if bigger than 42
+        ? j === 3
+          ? winningArray.push(toPush) //always push if last in array
+          : !RIGHT_EDGE.includes(toPush) && !BOTTOM_EDGE.includes(toPush)
+          ? winningArray.push(toPush) //if not part of bottom or right edge push
+          : BOTTOM_EDGE.includes(base)
+          ? winningArray.push(toPush) // if base is bottom edge push
+          : null
+        : null;
+    }
+    if (winningArray.length === 4) {
+      WINNING_ARRAYS.push(winningArray);
+    }
+}
 
 
 function createGame(columns, rows) {
@@ -66,7 +98,7 @@ function createGame(columns, rows) {
   
       addMouseOverListener(gridBox);
     }
-  }
+}
 
 function gameLogic(gameSize) {
     let column = 1;
@@ -83,7 +115,73 @@ function gameLogic(gameSize) {
       column++;
       GAME.push(gridBox);
     }
-  }
+}
+
+function addMouseOverListener(gridBox) {
+    gridBox.addEventListener("mouseover", (event) => {
+      handleMouseover(gridBox);
+    });
+}
+
+function handleMouseover(gridBox) {
+    if (!ANIMATING) {
+      let currentColumn = Number(gridBox.getAttribute("id").substring(8)) + 1;
+      if (currentColumn <= 7 && background.children.length === 1) {
+        let newPiece = createPiece(gridBox, PIECE_COLOR);
+        newPiece.style.zIndex = "-1";
+  
+        const handleClick = () => {
+          gridBox.removeEventListener("click", handleClick);
+          ANIMATING = true;
+          let tempPieceColor = PIECE_COLOR;
+          if (PIECE_COLOR === "red") {
+            PIECE_COLOR = "yellow";
+          } else {
+            PIECE_COLOR = "red";
+          }
+  
+          let keyframes = [{ transform: `translateY(${GRID_SIZE * 6}px)` }];
+  
+          let options = {
+            duration: 1000,
+          };
+          newPiece.animate(keyframes, options);
+  
+          const columnArray = GAME.filter(
+            (gridBox) => gridBox.column === currentColumn
+          );
+          for (let i = 5; i >= 0; i--) {
+            if (columnArray[i].color === "blank") {
+              const id = columnArray[i].id;
+              GAME[id].color = tempPieceColor;
+              checkForWin(tempPieceColor);
+              setTimeout(() => {
+                const gridBoxHoleToUpdate = document.getElementById(
+                  "gridBox-" + id
+                ).children[0];
+                gridBoxHoleToUpdate.style.backgroundColor = tempPieceColor;
+                background.removeChild(newPiece);
+                ANIMATING = false;
+              }, i * 170);
+  
+              return;
+            }
+          }
+        };
+  
+        gridBox.addEventListener("mouseout", () => {
+          if (background.children[1] === newPiece) {
+            if (!ANIMATING) {
+              background.removeChild(newPiece);
+            }
+          }
+          gridBox.removeEventListener("click", handleClick);
+        });
+  
+        gridBox.addEventListener("click", handleClick);
+      }
+    }
+}
 
   
 
