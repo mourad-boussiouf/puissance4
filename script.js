@@ -8,6 +8,7 @@ let BOTTOM_EDGE = [35, 36, 37, 38, 39, 40, 41];
 
 const background = document.createElement("div");
 const board = document.createElement("div");
+let reset = document.getElementById("reset");
 
 background.style.backgroundColor = "rgba(255, 255, 255, 0)";
 document.body.appendChild(background);
@@ -244,5 +245,8 @@ function createjeton(gridBox, color) {
 
 board.style.cursor = `pointer`;
 
+reset.addEventListener("click", () => {
+    location.reload();
+  }, false);
 
 createGame(7, 6);
